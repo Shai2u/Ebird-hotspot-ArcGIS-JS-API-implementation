@@ -34,6 +34,7 @@ require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate"]
     });
 
     locateBtn.on("locate", ({ position }) => {
+        document.getElementById("overlay").style.display = "block"
         doSomething(position)
         
       })
