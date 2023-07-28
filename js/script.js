@@ -2,6 +2,7 @@
 // Define variables
 var API_KEY = "AAPK2b9d83399ba1413f8c6cff164ec8fd85-8M2RQwo1ZczBqrcqlwhQQ6jugWmzIwcIdU5-j23AMr5hU5MmA3SJeHl-U7-jFcJ"
 var centerPoint = [35, 32.8]
+var lngLat = [0, 0]
 
 // Hide sldier element
 document.getElementById("overlay").style.display = "none"
@@ -16,8 +17,8 @@ const polySym = {
   };
 
 //Init map view
-require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate", "esri/geometry/Point", "esri/layers/GraphicsLayer", "esri/Graphic", "esri/geometry/geometryEngine"],
-    (esriConfig, Map, MapView, Locate, Point, GraphicsLayer, Graphic, geometryEngine) => {
+require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate", "esri/geometry/Point", "esri/layers/GraphicsLayer", "esri/Graphic", "esri/geometry/geometryEngine",  "esri/layers/GeoJSONLayer"],
+    (esriConfig, Map, MapView, Locate, Point, GraphicsLayer, Graphic, geometryEngine, GeoJSONLayer) => {
 
         esriConfig.apiKey = API_KEY;
 
@@ -48,6 +49,10 @@ require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate",
             .addEventListener('input', function (e) {
                 show_radius_on_map(e.target.value, position)
             });
+            lngLat = [position.coords.longitude, position.coords.latitude]
+            document.getElementById('submit').addEventListener('click', function (e) {
+                get_hotspots()
+            })
 
         })
 
@@ -81,5 +86,88 @@ require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate",
 
         }
 
+        function get_hotspots() {
+            var radius = document.getElementById('slider').value/1000
+            var url = `https://api.ebird.org/v2/ref/hotspot/geo?lat=${lngLat[1]}&lng=${lngLat[0]}&back=30&dist=${radius}&fmt=json`;
+            console.log(url)
+        
+        
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    // Perform further actions with the response data
+        
+                    var geojson = generate_geojson_hot_spot_sightings(data);
+        
+
+                    // create a new blob from geojson featurecollection
+                    const blob = new Blob([JSON.stringify(geojson)], {
+                        type: "application/json"
+                    });
+                    
+                    // URL reference to the blob
+                    const url = URL.createObjectURL(blob);
+                    // create new geojson layer using the blob url
+     
+                    const geojsonLayer = new GeoJSONLayer({
+                        url: url,
+                        renderer: {
+                          type: "simple",
+                          symbol: {
+                            type: "simple-marker",
+                            color: [255, 0, 0],
+                            size: "8px",
+                            outline: {
+                              color: [255, 255, 255],
+                              width: 1
+                            }
+                          }
+                        }
+                      });
+                    // Add the GeoJSONLayer to the map
+                    map.add(geojsonLayer);
+        
+
+                })
+                .catch(error => {
+                    console.log('Error:', error);
+                });
+        
+        }
+
     });
 
+
+    function generate_geojson_hot_spot_sightings(inputList) {
+    
+
+
+        const features = inputList.map(item => {
+            const { locName, lat, lng, ...properties } = item;
+            return {
+                type: "Feature",
+                geometry: {
+                    type: "Point",
+                    coordinates: [lng, lat]
+                },
+                properties: {
+                    locName,
+                    ...properties
+                }
+            };
+        });
+    
+        const geojson = {
+            type: "FeatureCollection",
+            features
+        };
+    
+        console.log(JSON.stringify(geojson, null, 2));
+    
+        return geojson;
+    
+    
+    
+    
+    } 
