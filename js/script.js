@@ -109,7 +109,24 @@ require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate",
                     // URL reference to the blob
                     const url = URL.createObjectURL(blob);
                     // create new geojson layer using the blob url
-     
+                    const template = {
+                        // autocasts as new PopupTemplate()
+                        title: "{locName}",
+                        content: [
+                          {
+                            // It is also possible to set the fieldInfos outside of the content
+                            // directly in the popupTemplate. If no fieldInfos is specifically set
+                            // in the content, it defaults to whatever may be set within the popupTemplate.
+                            type: "fields",
+                            fieldInfos: [
+                              {
+                                fieldName: "Nesher Reservoirs מאגרי נשר",
+                                label: "Location Name"
+                              }
+                            ]
+                          }
+                        ]
+                      };
                     const geojsonLayer = new GeoJSONLayer({
                         url: url,
                         renderer: {
@@ -122,8 +139,10 @@ require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate",
                               color: [255, 255, 255],
                               width: 1
                             }
-                          }
-                        }
+                          },
+                        },
+                        popupEnabled: true,
+                        popupTemplate: template
                       });
                     // Add the GeoJSONLayer to the map
                     map.add(geojsonLayer);
@@ -162,9 +181,7 @@ require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate",
             type: "FeatureCollection",
             features
         };
-    
-        console.log(JSON.stringify(geojson, null, 2));
-    
+        
         return geojson;
     
     
