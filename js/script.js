@@ -1,3 +1,5 @@
+// Hide sldier element
+document.getElementById("overlay").style.display = "none"
 
 //Init map view
 require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate"], 
