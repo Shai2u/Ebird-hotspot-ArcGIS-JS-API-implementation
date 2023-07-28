@@ -25,5 +25,16 @@ require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate"]
     view.ui.add(locateBtn, {
         position: "top-left"
     });
+
+    locateBtn.on("locate", ({ position }) => {
+        doSomething(position)
+        
+      })
 });
 
+function doSomething(location)
+{
+    const { longitude, latitude } = location.coords;
+        console.log(`lat: ${latitude.toFixed(4)}, long: ${longitude.toFixed(4)}`);
+
+}
