@@ -44,7 +44,10 @@ require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate",
 
         locateBtn.on("locate", ({ position }) => {
             document.getElementById("overlay").style.display = "block"
-            doSomething(position)
+            document.getElementById('slider')
+            .addEventListener('input', function (e) {
+                show_radius_on_map(e.target.value, position)
+            });
 
         })
 
@@ -52,8 +55,8 @@ require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate",
         const bufferLayer = new GraphicsLayer();
         map.add(bufferLayer)
 
-        function doSomething(location) {
-
+        function show_radius_on_map(radius_value, location)
+        {
             const { longitude, latitude } = location.coords;
             //console.log(`lat: ${latitude.toFixed(4)}, long: ${longitude.toFixed(4)}`);
             var point = new Point({
@@ -61,7 +64,7 @@ require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate",
                 y: latitude,
               });
 
-            const buffer = geometryEngine.geodesicBuffer(point, 560, "meters");
+            const buffer = geometryEngine.geodesicBuffer(point, radius_value, "meters");
             if(bufferLayer.graphics.length === 0){
                 bufferLayer.add(
                   new Graphic({
