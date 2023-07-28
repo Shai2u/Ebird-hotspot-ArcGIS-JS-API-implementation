@@ -14,22 +14,28 @@ const polySym = {
       width: 2
     }
   };
+
 //Init map view
 require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate", "esri/geometry/Point", "esri/layers/GraphicsLayer", "esri/Graphic", "esri/geometry/geometryEngine"],
-(esriConfig, Map, MapView, Locate) => {
+    (esriConfig, Map, MapView, Locate, Point, GraphicsLayer, Graphic, geometryEngine) => {
 
-    esriConfig.apiKey = API_KEY;
+        esriConfig.apiKey = API_KEY;
 
-    const map = new Map({
-        basemap: "arcgis-topographic" // Basemap layer service
-    });
+        const map = new Map({
+            basemap: "arcgis-topographic" // Basemap layer service
+        });
 
-    const view = new MapView({
-        map: map,
-        center: centerPoint, // Longitude, latitude
-        zoom: 13, // Zoom level
-        container: "map" // Div element
-    });
+        const view = new MapView({
+            map: map,
+            center: centerPoint, // Longitude, latitude
+            zoom: 13, // Zoom level
+            container: "map" // Div element
+        });
+
+        // Define location variable
+        const locateBtn = new Locate({
+            view: view
+        });
 
         // Add the locate widget to the top left corner of the view
         view.ui.add(locateBtn, {
@@ -69,3 +75,6 @@ require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate",
               }
 
         }
+
+    });
+
