@@ -1,6 +1,8 @@
 
 //Init map view
-require(["esri/config", "esri/Map", "esri/views/MapView"], function(esriConfig, Map, MapView) {
+require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate"], 
+(esriConfig, Map, MapView, Locate) => {
+
     esriConfig.apiKey = "AAPK2b9d83399ba1413f8c6cff164ec8fd85-8M2RQwo1ZczBqrcqlwhQQ6jugWmzIwcIdU5-j23AMr5hU5MmA3SJeHl-U7-jFcJ";
 
     const map = new Map({
@@ -14,5 +16,14 @@ require(["esri/config", "esri/Map", "esri/views/MapView"], function(esriConfig, 
         container: "map" // Div element
       });
 
+    // Define location variable
+    const locateBtn = new Locate({
+        view: view
+    });
+
+    // Add the locate widget to the top left corner of the view
+    view.ui.add(locateBtn, {
+        position: "top-left"
+    });
 });
 
