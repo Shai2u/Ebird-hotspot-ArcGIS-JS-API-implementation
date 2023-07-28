@@ -17,6 +17,10 @@ body {
     right: 0;
     padding: 10px;
 }
+.radius_value_div {
+    text-align: center;
+    width: 100%;
+}
 
 .map-overlay .map-overlay-inner {
     background-color: #fff;
@@ -25,6 +29,13 @@ body {
     padding: 10px;
     margin-bottom: 10px;
 }
+
+.map-overlay-inner {
+    display: flex;
+}
+.box {
+    margin-right: 10px;
+  }
 
 .map-overlay input {
     background-color: transparent;

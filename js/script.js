@@ -57,6 +57,8 @@ require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Locate",
 
         function show_radius_on_map(radius_value, location)
         {
+            // Set the label to the radius
+            document.getElementById('radius_value').textContent = `${radius_value} [m]`;
             const { longitude, latitude } = location.coords;
             //console.log(`lat: ${latitude.toFixed(4)}, long: ${longitude.toFixed(4)}`);
             var point = new Point({
